@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="76" y1="48" x2="436" y2="468" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="256" y1="180" x2="256" y2="332" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#E2E8F0" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="120" fill="url(#bg)"/>
+  
+  <!-- Outer motion ring -->
+  <path d="M360 160 C320 120, 200 120, 160 180 C130 220, 130 290, 170 330 C200 360, 240 360, 256 340 C272 360, 312 360, 342 330 C382 290, 382 220, 360 160 Z" fill="none" stroke="white" stroke-width="8" stroke-opacity="0.15"/>
+  
+  <!-- Sleek Fish A (Top-Right to Bottom-Left curve, representing Bandeng) -->
+  <path d="M380 180 C360 150, 300 130, 256 150 C200 175, 170 230, 170 290 C170 320, 185 340, 210 340 C235 340, 260 300, 270 270 C280 240, 320 200, 380 180 Z" fill="url(#glow)"/>
+  <path d="M380 180 L395 160 L390 195 Z" fill="url(#glow)"/> <!-- Forked tail of Bandeng -->
+  
+  <!-- Sleek Fish B (Bottom-Left to Top-Right curve, representing Lele / Catfish with whiskers) -->
+  <path d="M132 332 C152 362, 212 382, 256 362 C312 337, 342 282, 342 222 C342 192, 327 172, 302 172 C277 172, 252 212, 242 242 C232 272, 192 312, 132 332 Z" fill="#FFFFFF" fill-opacity="0.9"/>
+  <!-- Whiskers for Lele -->
+  <path d="M132 332 C120 340, 110 342, 105 342" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M132 332 C122 320, 115 310, 110 305" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Center Play Button (Dynamic Streaming Symbol) -->
+  <polygon points="230,206 310,256 230,306" fill="#FFFFFF" filter="drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.25))"/>
+</svg>

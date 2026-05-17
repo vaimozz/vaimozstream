@@ -1,0 +1,132 @@
+<% layout('layout') -%>
+
+<style>
+  .ytv3-wrap { background: #f4f6fb; color: #16233c; border-radius: 16px; padding: 14px; }
+  .ytv3-head { display:flex; justify-content:space-between; align-items:center; gap:12px; background:#1f3d96; color:#fff; border-radius:14px; padding:14px 18px; }
+  .ytv3-title { font-size: 1.4rem; font-weight: 800; letter-spacing: .3px; }
+  .ytv3-clock { background:#ef4444; border-radius:12px; padding:8px 12px; font-weight:700; }
+  .ytv3-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:14px; }
+  .ytv3-stat { background:#fff; border:1px solid #d7deea; border-radius:30px; padding:10px 14px; display:flex; justify-content:space-between; font-weight:700; }
+  .ytv3-filter { margin-top:14px; background:#fff; border:1px solid #d7deea; border-radius:14px; padding:12px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+  .ytv3-filter input,.ytv3-filter select { background:#f8fafc; border:1px solid #cdd6e6; border-radius:10px; padding:10px; color:#16233c; }
+  .ytv3-btn { border-radius:10px; padding:10px 14px; color:#fff; font-weight:700; }
+  .ytv3-btn-primary { background:#2563eb; }
+  .ytv3-btn-muted { background:#6b7280; }
+  .ytv3-table-wrap { margin-top:14px; background:#fff; border:1px solid #d7deea; border-radius:14px; overflow:auto; }
+  .ytv3-table { width:100%; border-collapse:collapse; min-width:1200px; }
+  .ytv3-table th { background:#1e40af; color:#fff; padding:10px; font-size:.8rem; text-align:left; }
+  .ytv3-table td { border-top:1px solid #e5eaf3; padding:10px; color:#1f2937; }
+  .ytv3-badge { padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
+  .ytv3-badge-queue { background:#dbeafe; color:#1d4ed8; }
+  .ytv3-badge-live { background:#dcfce7; color:#166534; }
+  .ytv3-badge-offline { background:#f3f4f6; color:#374151; }
+</style>
+
+<div class="ytv3-wrap">
+  <div class="ytv3-head">
+    <div class="ytv3-title">ROSI LIVE STREAMING - YOUTUBE API V3</div>
+    <div id="ytv3Clock" class="ytv3-clock">--:--:--</div>
+  </div>
+
+  <div class="ytv3-stats">
+    <div class="ytv3-stat"><span>Total Channel</span><span id="statChannel">0</span></div>
+    <div class="ytv3-stat"><span>Jumlah Live</span><span id="statJumlah">0</span></div>
+    <div class="ytv3-stat"><span>Queue</span><span id="statQueue">0</span></div>
+    <div class="ytv3-stat"><span>Run</span><span id="statRun">0</span></div>
+    <div class="ytv3-stat"><span>Done</span><span id="statDone">0</span></div>
+    <div class="ytv3-stat"><span>Error</span><span id="statError">0</span></div>
+  </div>
+
+  <div class="ytv3-filter">
+    <select id="channelId">
+      <option value="">Semua Channel</option>
+      <% youtubeChannels.forEach((ch) => { %>
+        <option value="<%= ch.id %>"><%= ch.channel_name %></option>
+      <% }) %>
+    </select>
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+    <button class="ytv3-btn ytv3-btn-primary" id="btnFilter">Filter</button>
+    <button class="ytv3-btn ytv3-btn-muted" id="btnReset">Reset</button>
+  </div>
+
+  <div class="ytv3-table-wrap">
+    <table class="ytv3-table">
+      <thead>
+        <tr>
+          <th>NO</th><th>NAMA CHANNEL</th><th>NAMA LIVE</th><th>FILE</th><th>STREAM ID</th><th>BROADCAST ID</th><th>PRIVACY</th><th>STATUS JOB</th><th>STATUS YOUTUBE</th><th>JADWAL BUAT</th><th>JADWAL MULAI</th>
+        </tr>
+      </thead>
+      <tbody id="ytv3Rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function formatDateTime(iso) {
+    if (!iso || iso === '-') return '-';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '-';
+    return d.toLocaleString('id-ID', { hour12: false });
+  }
+
+  function renderStatusBadge(status) {
+    const s = (status || '').toLowerCase();
+    if (s === 'scheduled') return '<span class="ytv3-badge ytv3-badge-queue">QUEUE</span>';
+    if (s === 'live') return '<span class="ytv3-badge ytv3-badge-live">RUN</span>';
+    if (s === 'offline') return '<span class="ytv3-badge ytv3-badge-offline">DONE</span>';
+    return '<span class="ytv3-badge ytv3-badge-offline">ERROR</span>';
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('ytv3Clock').textContent = now.toLocaleString('id-ID', { hour12: false });
+  }
+
+  async function loadData() {
+    const channelId = document.getElementById('channelId').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    const params = new URLSearchParams({ channelId, startDate, endDate });
+    const res = await fetch('/api/youtube-v3/dashboard-data?' + params.toString());
+    const data = await res.json();
+    if (!data.success) return;
+
+    document.getElementById('statChannel').textContent = data.summary.totalChannel;
+    document.getElementById('statJumlah').textContent = data.summary.jumlahLive;
+    document.getElementById('statQueue').textContent = data.summary.queue;
+    document.getElementById('statRun').textContent = data.summary.run;
+    document.getElementById('statDone').textContent = data.summary.done;
+    document.getElementById('statError').textContent = data.summary.error;
+
+    const body = document.getElementById('ytv3Rows');
+    body.innerHTML = data.rows.map((row, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${row.channel}</td>
+        <td>${row.namaLive}</td>
+        <td>${row.file}</td>
+        <td>${row.streamId}</td>
+        <td>${row.broadcastId}</td>
+        <td>${row.privacy}</td>
+        <td>${renderStatusBadge(row.statusJob)}</td>
+        <td>${row.statusYoutube}</td>
+        <td>${formatDateTime(row.jadwalBuat)}</td>
+        <td>${formatDateTime(row.jadwalMulai)}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('btnFilter').addEventListener('click', loadData);
+  document.getElementById('btnReset').addEventListener('click', () => {
+    document.getElementById('channelId').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    loadData();
+  });
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  loadData();
+</script>

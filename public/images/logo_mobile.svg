@@ -1,0 +1,21 @@
+<svg width="224" height="224" viewBox="0 0 224 224" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgm" x1="34" y1="18" x2="190" y2="206" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="200" height="200" rx="54" fill="url(#bgm)"/>
+  
+  <!-- Mini stylized dual-fish swirl -->
+  <!-- Bandeng curve -->
+  <path d="M166 79 C157 66, 131 57, 112 66 C87 77, 74 101, 74 127 C74 140, 81 149, 92 149 C103 149, 114 131, 118 118 C122 105, 140 87, 166 79 Z" fill="white"/>
+  <path d="M166 79 L173 70 L170 86 Z" fill="white"/>
+  
+  <!-- Lele curve with whisker -->
+  <path d="M58 145 C67 158, 93 167, 112 158 C137 147, 150 123, 150 97 C150 84, 143 75, 132 75 C121 75, 110 93, 106 106 C102 119, 84 137, 58 145 Z" fill="white" fill-opacity="0.85"/>
+  <path d="M58 145 C52 149, 48 150, 46 150" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Mini Play button -->
+  <polygon points="100,90 135,112 100,134" fill="white"/>
+</svg>
